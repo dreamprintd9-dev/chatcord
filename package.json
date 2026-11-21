@@ -1,0 +1,2 @@
+{"name":"chatcord","version":"1.0.0","main":"index.js","scripts":{"start":"node index.js"},"engines":{"node":">=18"},
+"dependencies":{"express":"^4.19.2","socket.io":"^4.7.5","bcryptjs":"^2.4.3","jsonwebtoken":"^9.0.2"}}
