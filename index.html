@@ -1,0 +1,80 @@
+<!DOCTYPE html><html lang="bn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>চ্যাটকর্ড</title>
+<style>
+:root{--b1:#1e1f22;--b2:#2b2d31;--b3:#313338;--b4:#404249;--tx:#dbdee1;--mu:#949ba4;--ac:#5865f2;--gr:#23a55a;--rd:#da373c;color-scheme:dark}
+*{box-sizing:border-box}html,body{height:100%;margin:0}body{background:var(--b3);color:var(--tx);font:15px/1.4 "Noto Sans Bengali",system-ui,sans-serif}
+button,input,select{font:inherit}[hidden]{display:none!important}
+#login{height:100%;display:grid;place-items:center}#login div{background:var(--b2);padding:28px;border-radius:10px;width:320px;display:grid;gap:10px}
+input{background:var(--b1);border:1px solid var(--b4);color:var(--tx);border-radius:5px;padding:9px;width:100%}
+.btn{background:var(--ac);color:#fff;border:0;border-radius:5px;padding:9px 14px;cursor:pointer}.btn.g{background:var(--b4)}.btn.r{background:var(--rd)}.btn.on{background:var(--gr)}
+#app{display:flex;height:100%}#rail{width:72px;background:var(--b1);padding:10px 0;display:flex;flex-direction:column;align-items:center;gap:8px;overflow:auto;flex:none}
+.sv{width:48px;height:48px;border-radius:50%;background:var(--b3);border:0;font-size:22px;cursor:pointer;color:var(--tx)}.sv.on,.sv:hover{border-radius:15px;background:var(--ac)}
+#side{width:250px;background:var(--b2);display:flex;flex-direction:column;flex:none}#side h3{margin:0;padding:13px;border-bottom:1px solid var(--b1);display:flex;justify-content:space-between;font-size:15px}
+#chs{flex:1;overflow:auto;padding:8px}.lbl{color:var(--mu);font-size:12px;font-weight:700;padding:8px 4px;display:flex;justify-content:space-between}.lbl button{background:0;border:0;color:var(--mu);cursor:pointer}
+.ch{padding:6px 8px;border-radius:4px;color:var(--mu);cursor:pointer}.ch:hover{background:#fff1}.ch.on{background:var(--b4);color:#fff}.vu{padding:2px 8px 2px 28px;font-size:13px;color:var(--mu)}
+#me{background:var(--b1);padding:8px;display:flex;gap:8px;align-items:center}.av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;flex:none}
+#main{flex:1;display:flex;flex-direction:column;min-width:0}#top{height:48px;padding:0 14px;display:flex;align-items:center;border-bottom:1px solid var(--b1);font-weight:700}
+#vp{background:#000;padding:8px}#grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;max-height:46vh;overflow:auto}
+.tile{position:relative;background:var(--b1);border-radius:8px;overflow:hidden;aspect-ratio:16/9}.tile video{width:100%;height:100%;object-fit:contain;background:#111}.tile b{position:absolute;left:6px;bottom:6px;background:#000a;padding:1px 7px;border-radius:4px;font-size:12px}
+#ctl{display:flex;gap:8px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+#body{flex:1;display:flex;min-height:0}#col{flex:1;display:flex;flex-direction:column;min-width:0}#msgs{flex:1;overflow:auto;padding:10px 0}
+.m{display:flex;gap:12px;padding:3px 16px}.m:hover{background:#ffffff08}.m .c{flex:1;overflow-wrap:anywhere}.d{color:var(--mu);font-size:12px;margin-left:6px}
+#box{margin:0 16px 16px;display:flex;background:var(--b4);border-radius:8px}#box input{background:0;border:0;outline:0;padding:12px}
+#mem{width:220px;background:var(--b2);padding:8px;overflow:auto;flex:none}.mb{display:flex;gap:8px;padding:5px;align-items:center;opacity:.5}.mb.o{opacity:1}.mb small{display:block;color:var(--mu);font-size:11px}
+dialog{background:var(--b2);color:var(--tx);border:0;border-radius:10px;padding:18px;width:320px}dialog::backdrop{background:#0009}dialog label{display:block;margin:8px 0 3px;font-size:12px;color:var(--mu)}
+@media(max-width:800px){#mem{display:none}#side{width:170px}}
+</style></head><body>
+<div id="login"><div><h2 style="margin:0">চ্যাটকর্ড</h2><input id="an" placeholder="ইউজারনেম"><input id="ap" type="password" placeholder="পাসওয়ার্ড (ন্যূনতম ৬)"><div id="ae" style="color:#f66;font-size:13px"></div><button class="btn" onclick="auth('login')">লগ ইন</button><button class="btn g" onclick="auth('register')">নতুন অ্যাকাউন্ট</button></div></div>
+<div id="app" hidden><div id="rail"></div><div id="side"><h3><span id="sn"></span><span id="sset"></span></h3><div id="chs"></div><div id="me"><div class="av" id="mav"></div><div style="flex:1;min-width:0"><b id="mnm"></b><div id="mst" style="font-size:11px;color:var(--mu)"></div></div><button class="btn g" onclick="profile()">⚙️</button></div></div>
+<div id="main"><div id="top"></div><div id="vp" hidden><div id="grid"></div><div id="ctl"><button class="btn" id="bm" onclick="tmic()">🎤 মাইক</button><button class="btn g" id="bc" onclick="tcam()">📷 ক্যামেরা</button><button class="btn g" id="bs" onclick="tscr()">🖥️ স্ক্রিন শেয়ার</button><button class="btn r" onclick="leaveVoice()">📞 ছাড়ুন</button></div></div>
+<div id="body"><div id="col"><div id="msgs"></div><div id="box"><input id="in" placeholder="মেসেজ লিখুন…" autocomplete="off"><button class="btn" onclick="send()">➤</button></div></div><div id="mem"></div></div></div></div>
+<dialog id="dlg"><form method="dialog"><h3 id="dt" style="margin-top:0"></h3><div id="df"></div><p style="text-align:right"><button class="btn g" value="x">বাতিল</button> <button class="btn" id="dok" value="ok">ঠিক আছে</button></p></form></dialog>
+<datalist id="games"><option>Minecraft<option>Valorant<option>Free Fire<option>PUBG<option>Fortnite<option>eFootball<option>Chess<option>Ludo King<option>GTA V<option>Among Us</datalist>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+const $=s=>document.querySelector(s),esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let T=localStorage.getItem("t"),socket,ST={servers:[],me:null},cs=null,cc=null,msgs={},vs={},vch=null;
+const av=(n,c)=>`<div class="av" style="background:${c}">${esc(n[0])}</div>`;
+async function auth(p){const r=await fetch("/api/"+p,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:$("#an").value.trim(),pass:$("#ap").value})});const j=await r.json();if(!r.ok)return $("#ae").textContent=j.e;T=j.token;localStorage.setItem("t",T);start()}
+function start(){$("#login").hidden=true;$("#app").hidden=false;socket=io({auth:{token:T}});
+ socket.on("connect_error",()=>{localStorage.removeItem("t");location.reload()});
+ socket.on("err",e=>alert(e));
+ socket.on("state",s=>{ST=s;if(!ST.servers.find(x=>x.id==cs)){cs=ST.servers[0]?.id;cc=null}const x=sv();if(x&&!x.channels.find(c=>c.id==cc))pick(x.channels.find(c=>c.type=="text")?.id);render()});
+ socket.on("history",({cid,list})=>{msgs[cid]=list;if(cid==cc)drawMsgs()});
+ socket.on("msg",({cid,m})=>{(msgs[cid]=msgs[cid]||[]).push(m);if(cid==cc)drawMsgs()});
+ socket.on("voice:state",({cid,users})=>{vs[cid]=users;renderCh()});
+ socket.on("voice:peers",({cid,peers})=>{peers.forEach(p=>{names[p.sid]=p.name;mk(p.sid)})});
+ socket.on("voice:joined",({sid,name})=>names[sid]=name);
+ socket.on("voice:left",sid=>drop(sid));
+ socket.on("signal",onSignal)}
+const sv=()=>ST.servers.find(x=>x.id==cs);
+function pick(c){cc=c;if(c&&!msgs[c])socket.emit("history",c);render()}
+function render(){const x=sv(),me=ST.me;if(!me)return;
+ $("#rail").innerHTML=ST.servers.map(s=>`<button class="sv ${s.id==cs?"on":""}" title="${esc(s.name)}" onclick="cs='${s.id}';cc=null;pick(sv().channels.find(c=>c.type=='text')?.id)">${s.emoji}</button>`).join("")+`<button class="sv" onclick="addServer()">＋</button>`;
+ $("#mav").outerHTML=`<div class="av" id="mav" style="background:${me.color}">${esc(me.name[0])}</div>`;$("#mnm").textContent=me.name;$("#mst").textContent=me.game?"🎮 "+me.game:me.status;
+ if(!x){$("#sn").textContent="চ্যাটকর্ড";$("#chs").innerHTML="";$("#top").textContent="একটি সার্ভার বানান বা যোগ দিন";$("#msgs").innerHTML="";$("#mem").innerHTML="";return}
+ $("#sn").textContent=x.name;$("#sset").innerHTML=x.owner==me.id?`<button class="btn g" style="padding:2px 8px" onclick="srvSet()">⚙️</button>`:"";
+ renderCh();const c=x.channels.find(h=>h.id==cc);$("#top").textContent=c?"# "+c.name:"";
+ $("#mem").innerHTML=`<div class="lbl">সদস্য — ${x.list.length}</div>`+x.list.map(u=>`<div class="mb ${u.online?"o":""}">${av(u.name,u.color)}<div>${esc(u.name)}<small>${u.game?"🎮 "+esc(u.game):esc(u.status)}</small></div></div>`).join("");drawMsgs()}
+function renderCh(){const x=sv();if(!x)return;const o=x.owner==ST.me.id,H=t=>x.channels.filter(c=>c.type==t);
+ $("#chs").innerHTML=`<div class="lbl">আমন্ত্রণ কোড: <b style="color:var(--tx);user-select:all">${x.code}</b></div><div class="lbl">টেক্সট ${o?`<button onclick="addCh('text')">＋</button>`:""}</div>`+H("text").map(c=>`<div class="ch ${c.id==cc?"on":""}" onclick="pick('${c.id}')"># ${esc(c.name)}</div>`).join("")+`<div class="lbl">ভয়েস ${o?`<button onclick="addCh('voice')">＋</button>`:""}</div>`+H("voice").map(c=>`<div class="ch ${c.id==vch?"on":""}" onclick="joinVoice('${c.id}')">🔊 ${esc(c.name)}</div>`+(vs[c.id]||[]).map(n=>`<div class="vu">● ${esc(n)}</div>`).join("")).join("")}
+function drawMsgs(){const L=msgs[cc]||[];$("#msgs").innerHTML=L.map(m=>`<div class="m">${av(m.name,m.color)}<div class="c"><b style="color:${m.color}">${esc(m.name)}</b><span class="d">${new Date(m.t).toLocaleString("bn-BD")}</span><div>${esc(m.x)}</div></div></div>`).join("");$("#msgs").scrollTop=1e9}
+function send(){const v=$("#in").value.trim();if(v&&cc){socket.emit("msg",{cid:cc,text:v});$("#in").value=""}}$("#in").addEventListener("keydown",e=>e.key=="Enter"&&send());
+function form(t,f,cb){$("#dt").textContent=t;$("#df").innerHTML=f.map(([k,l,v,ty,li])=>`<label>${l}</label><input name="${k}" value="${esc(v||"")}" type="${ty||"text"}" ${li?`list="${li}"`:""}>`).join("");const d=$("#dlg");d.onclose=()=>{if(d.returnValue=="ok"){const o={};f.forEach(([k])=>o[k]=d.querySelector(`[name=${k}]`).value.trim());cb(o)}};d.showModal()}
+function addServer(){form("সার্ভার",[["n","নতুন সার্ভারের নাম"],["e","ইমোজি","🚀"],["c","অথবা আমন্ত্রণ কোড দিয়ে যোগ দিন"]],o=>o.c?socket.emit("server:join",o.c):o.n&&socket.emit("server:create",{name:o.n,emoji:o.e}))}
+function addCh(type){form("নতুন চ্যানেল",[["n","নাম"]],o=>socket.emit("channel:create",{sid:cs,name:o.n,type}))}
+function srvSet(){const x=sv();form("সার্ভার কাস্টমাইজ",[["n","নাম",x.name],["e","ইমোজি",x.emoji]],o=>socket.emit("server:update",{sid:cs,name:o.n,emoji:o.e}))}
+function profile(){const m=ST.me;form("আমার প্রোফাইল",[["color","রঙ",m.color,"color"],["status","স্ট্যাটাস",m.status],["game","এখন যে গেম খেলছি",""+m.game,"text","games"]],o=>socket.emit("profile",o))}
+// ---- ভয়েস/ভিডিও (WebRTC) ----
+const ICE={iceServers:[{urls:"stun:stun.l.google.com:19302"}]},P={},names={};let local=null,scr=null,cam=null;
+async function joinVoice(c){if(vch==c)return;if(vch)leaveVoice();vch=c;
+ try{local=await navigator.mediaDevices.getUserMedia({audio:true})}catch(e){local=new MediaStream();alert("মাইক পাওয়া যায়নি: "+e.message)}
+ $("#vp").hidden=false;tile("local",local,"আপনি",true);socket.emit("voice:join",c);renderCh();btn()}
+function leaveVoice(){socket.emit("voice:leave");Object.keys(P).forEach(drop);[local,scr,cam].forEach(s=>s&&s.getTracks().forEach(t=>t.stop()));local=scr=cam=null;vch=null;$("#grid").innerHTML="";$("#vp").hidden=true;renderCh()}
+function tile(id,stream,label,mute){let t=document.getElementById("t"+id);if(!t){t=document.createElement("div");t.className="tile";t.id="t"+id;t.innerHTML=`<video autoplay playsinline></video><b></b>`;$("#grid").append(t)}const v=t.querySelector("video");v.srcObject=stream;v.muted=!!mute;t.querySelector("b").textContent=label;return t}
+function mk(id){if(P[id])return P[id];const pc=new RTCPeerConnection(ICE),p=P[id]={pc,polite:socket.id>id,making:false,ignore:false};
+ pc.onicecandidate=e=>e.candidate&&socket.emit("signal",{to:id,data:{c:e.candidate}});
+ pc.onnegotiationneeded=async()=>{try{p.making=true;await pc.setLocalDescription();socket.emit("signal",{to:id,data:{d:pc.localDescription}})}catch(e){console.warn(e)}finally{p.making=false}};
+ pc.ontrack=e=>{const s=e.streams[0];if(!s)return;const k=id+"_"+s.id;tile(k,s,names[id]||"সদস্য").dataset.peer=id;s.onremovetrack=()=>{if(!s.getTracks().length)document.getElementById("t"+k)?.remove()}};
+ [local,cam&&local,scr].filter(Boolean).forEach((s,i)=>s.getTracks().forEach(t=>{if(!pc.getSenders().some(x=>x.track==t))pc.addTrack(t,s)}));
+ if(!local||!local.getTracks().length)pc.addTransceiver("audio",{direction:"recvonly"});return p}
+async function onSignal({from,name,data}){names[from]=names[from]||name;const p=mk(from),pc=p.pc;
